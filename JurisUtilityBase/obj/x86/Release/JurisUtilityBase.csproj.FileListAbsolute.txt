@@ -66,7 +66,6 @@ D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\obj\x86\Release\JurisUti
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\obj\x86\Release\JurisUtilityBase.SplashScreen.resources
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\obj\x86\Release\JurisUtilityBase.csproj.GenerateResource.cache
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\obj\x86\Release\JurisUtilityBase.csproj.CoreCompileInputs.cache
-D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\obj\x86\Release\JurisUtilityBase.csproj.Fody.CopyLocal.cache
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\JPS - Kovitz Matter Closer.exe.config
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\JPS - Kovitz Matter Closer.exe.manifest
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\JPS - Kovitz Matter Closer.application
@@ -75,7 +74,6 @@ D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\JPS - Ko
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\C1.C1Report.4.dll
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\C1.Win.C1Input.4.dll
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\C1.Win.C1Report.4.dll
-D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\Costura.dll
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\Gizmox.Extensions.dll
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\Ionic.Zlib.dll
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\JurisAuthenticator.dll
@@ -84,7 +82,6 @@ D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\JurisIDe
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\JurisStr21.dll
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\JurisStr221.dll
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\JurisSVR21.dll
-D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\bin\x86\Release\Costura.xml
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\obj\x86\Release\JPS - Kovitz Matter Closer.exe.manifest
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\obj\x86\Release\JPS - Kovitz Matter Closer.application
 D:\Projects\JPS - Kovitz Matter Closer\JurisUtilityBase\obj\x86\Release\JurisUtilityBase.csproj.CopyComplete

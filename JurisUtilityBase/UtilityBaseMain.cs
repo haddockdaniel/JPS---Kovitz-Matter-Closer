@@ -104,63 +104,264 @@ namespace JurisUtilityBase
         private void DoDaFix()
         {
 
-            
+
             switch (activeTab) // 0 client, 1 matter
             {
                 case 0:
-                    if (string.IsNullOrEmpty(textBoxClientText.Text))
-                        processClientExcel();
-                    else
-                        processSingleClient(textBoxClientText.Text);
+
+                        if (checkClientBoxesForInfo())
+                        {
+                            CliMat cm = new CliMat();
+                            cm.clicode = textBoxClientText.Text;
+                            cm.name = textBoxCliName.Text.Replace("%", "").Replace("'", "");
+                            cm.remarks = richTextBoxCliRemarks.Text.Replace("%", "").Replace("'", "");
+                            cm.branch = textBoxCliBranch.Text.Replace("%", "").Replace("'", "");
+
+                            processSingleClient(cm);
+                            showFinish();
+                    }
                     break;
                 case 1:
-                    if (string.IsNullOrEmpty(textBoxMatterText.Text))
-                        processMatterExcel();
-                    else
-                        processSingleMatter(); // 0 is simply a place holder for method...means nothing
+                    if (checkMatterBoxesForInfo())
+                    {
+                        CliMat cm = new CliMat();
+                        cm.clicode = textBoxClientMatter.Text;
+                        cm.matcode = textBoxMatterText.Text;
+                        cm.name = "";
+                        if (!string.IsNullOrEmpty(richTextBoxRemarksMatter.Text.Replace("%", "").Replace("'", "")))
+                            cm.remarks = richTextBoxRemarksMatter.Text.Replace("%", "").Replace("'", "");
+                        else
+                            cm.remarks = "";
+                        cm.branch = "";
+                        cm.matsys = getMatSysNbr(cm.clicode, cm.matcode);
+                        cm.clisys = getCliSysNbr(cm.clicode);
+                        if (cm.clisys != 0 && cm.matsys != 0)
+                            processSingleMatter(cm.matsys, cm.remarks);
+                        else
+                        {
+                            ErrorLog er = new ErrorLog();
+                            er.client = cm.clicode;
+                            er.matter = cm.matcode;
+                            er.message = "Cannot close matter because client/matter " + cm.clicode + "/" + cm.matcode + " does not exist. \r\n" + "\r\n";
+                            errorList.Add(er);
+
+                        }
+                        showFinish();
+                    }// 0 is simply a place holder for method...means nothing
                     break;
             }
 
-            UpdateStatus("Client(s)/Matter(s) updated.", 1, 1);
-
-            MessageBox.Show("The process is complete.", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.None);
 
             errorList.Clear();
             clientFilePath = "";
             matterFilePath = "";
             textBoxClientText.Text = "";
+            textBoxCliBranch.Text = "";
+            textBoxCliName.Text = "";
+            richTextBoxCliRemarks.Text = "";
             textBoxMatterText.Text = "";
+            richTextBoxRemarksMatter.Text = "";
+            textBoxClientMatter.Text = "";
+        }
+
+        private void showFinish()
+        {
+            UpdateStatus("Client(s)/Matter(s) updated.", 1, 1);
+
+            if (errorList.Count == 0)
+                MessageBox.Show("The process is complete and there were no errors.", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.None);
+            else
+            {
+                DialogResult ff = MessageBox.Show("The process is complete but there were errors." + "\r\n" + "Would you like to see the Error Log?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (ff == DialogResult.Yes)
+                {
+                    ReportDisplay rd = new ReportDisplay(errorList);
+                    rd.showErrors();
+                    rd.Show();
+                }
+            }
+        }
+
+
+        private bool checkMatterBoxesForInfo()
+        {
+            if (string.IsNullOrEmpty(textBoxClientMatter.Text)) 
+            {
+                MessageBox.Show("Please enter a Client Code", "Client Code Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(textBoxMatterText.Text))
+                {
+                    MessageBox.Show("Please enter a new Branch", "Matter Code Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                else
+                    return true;
+
+            }
+
+        }
+
+        private bool checkClientBoxesForInfo()
+        {
+            if (string.IsNullOrEmpty(textBoxClientText.Text))
+            {
+                MessageBox.Show("Please enter a Client Code", "Client Code Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(textBoxCliBranch.Text))
+                {
+                    MessageBox.Show("Please enter a new Branch", "Branch Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(textBoxCliName.Text))
+                    {
+                        MessageBox.Show("Please enter a new Name", "Name Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                    else
+                        return true;
+                }
+            }
+
         }
 
         private void processClientExcel()
         {
             //parse data from file
+            OpenFileDialogOpen.InitialDirectory = @"C:\";
+            OpenFileDialogOpen.Title = "Browse CSV Files";
+            OpenFileDialogOpen.DefaultExt = "csv";
+            OpenFileDialogOpen.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+            OpenFileDialogOpen.CheckFileExists = true;
+            OpenFileDialogOpen.CheckPathExists = true;
+            OpenFileDialogOpen.Multiselect = false;
 
+            List<CliMat> cliMatList = new List<CliMat>();
 
+            if (OpenFileDialogOpen.ShowDialog() == DialogResult.OK)
+            {
+                int lineNum = 0;
+                var fileStream = new FileStream(OpenFileDialogOpen.FileName, FileMode.Open, FileAccess.Read);
+                using (var streamReader = new StreamReader(fileStream))
+                {
+                    string line;
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        lineNum++;
+                        if (lineNum > 1) // ignore header line
+                        {
+                            TextFieldParser parser = new TextFieldParser(new StringReader(line));
 
-            //go one client at a time
-            processSingleClient(clicode);
+                            // You can also read from a file
+                            // TextFieldParser parser = new TextFieldParser("mycsvfile.csv");
 
+                            parser.HasFieldsEnclosedInQuotes = true;
+                            parser.SetDelimiters(",");
+
+                            string[] fields;
+
+                            while (!parser.EndOfData)
+                            {
+                                fields = parser.ReadFields();
+
+                                CliMat cm = new CliMat();
+                                cm.clicode = fields[0];
+                                cm.name = fields[1].Replace("%", "").Replace("'", "");
+                                cm.clisys = getCliSysNbr(cm.clicode);
+                                cm.remarks = fields[3].Replace("%", "").Replace("'", "");
+                                cm.branch = fields[2].Replace("%", "").Replace("'", "");
+                                cliMatList.Add(cm);
+                            }
+
+                            parser.Close();
+                        }
+                    }
+                }
+
+                //order all items by client and matter code
+                var finalList = cliMatList.OrderBy(x => x.clicode).ToList();
+                cliMatList.Clear();
+                foreach (CliMat cc in finalList)
+                {
+                    if (cc.clisys != 0)
+                        processSingleClient(cc);
+                    else
+                    {
+                        ErrorLog er = new ErrorLog();
+                        er.client = cc.clicode;
+                        er.message = "Client " + cc.clicode + " does not appear to be a valid client. Check that the entered code matches what is displayed in Core exactly." + "\r\n" + "\r\n"; //still close client even with no matters
+                        errorList.Add(er);
+
+                    }
+
+                }
+
+            }
+            showFinish();
+            errorList.Clear();
+            clientFilePath = "";
+            matterFilePath = "";
         }
 
-        private void processSingleClient(string clicode)
+        private void processSingleClient(CliMat cc)
         {
             string sql = "";
-            //make changes to matters first
-            sql = " select matsysnbr from matter inner join client on clisysnbr = matclinbr where dbo.jfn_FormatClientCode(clicode) = '" + clicode + "'";
-            DataSet ds = _jurisUtility.RecordsetFromSQL(sql);
-            if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+
+            cc.clisys = getCliSysNbr(cc.clicode);
+            if (cc.clisys == 0)
             {
                 ErrorLog er = new ErrorLog();
-                er.client = clicode;
-                er.message = "Client does not have any matters so it cannot be processed" + "\r\n" + "\r\n";
+                er.client = cc.clicode;
+                er.message = "Client " + cc.clicode + " does not appear to be a valid client. Check that the entered code matches what is displayed in Core exactly." + "\r\n" + "\r\n"; //still close client even with no matters
                 errorList.Add(er);
             }
             else
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
+            { 
+            //make changes to matters first
+            sql = " select matsysnbr from matter where matclinbr = " + cc.clisys.ToString() + " and MatStatusFlag <> 'C'";
+            DataSet ds = _jurisUtility.RecordsetFromSQL(sql);
+                if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
                 {
-                    processSingleMatter(Convert.ToInt32(dr[0].ToString()));
+                    ErrorLog er = new ErrorLog();
+                    er.client = cc.clicode;
+                    er.message = "Client " + cc.clicode + " does not have any open matters so no matters were changed. Client was still closed." + "\r\n" + "\r\n"; //still close client even with no matters
+                    errorList.Add(er);
+                }
+                else
+                {
+                    foreach (DataRow dr in ds.Tables[0].Rows) // Lieke wants clients closed regardless of matter status or errors
+                    {
+                        processSingleMatter(Convert.ToInt32(dr[0].ToString()), "");
+                    }
+
+                }
+                //close client regardless of matter status
+                sql = "";
+                sql = "update client set CliReportingName = left('" + cc.name + "', 30), CliNickName = left('" + cc.name + "', 30), branch = '" + cc.branch + "' where clisysnbr = " + cc.clisys.ToString();
+                _jurisUtility.ExecuteNonQuery(0, sql);
+
+                sql = "update client set AccountRep = '' where clisysnbr = " + cc.clisys.ToString();
+                _jurisUtility.ExecuteNonQuery(0, sql);
+
+                sql = " select CNNoteText from ClientNote where cnclient = " + cc.clisys + " and CNNoteIndex = 'Remarks'"; 
+                DataSet ds1 = _jurisUtility.RecordsetFromSQL(sql);
+                if (ds1 == null || ds1.Tables.Count == 0 || ds1.Tables[0].Rows.Count == 0)
+                { //if no remarks notecard exists, create a new one
+                    sql = "insert into ClientNote ([CNClient] ,[CNNoteIndex],[CNObject],[CNNoteText] ,[CNNoteObject]) " +
+                        " values (" + cc.clisys.ToString() + ", 'Remarks', ' ', cast('" + cc.remarks + "' as nvarchar(max)), null)";
+                    _jurisUtility.ExecuteNonQuery(0, sql);
+                }
+                else // if it does exist, put the new text at the top
+                {
+                    sql = "update ClientNote set CNNoteText = cast('" + cc.remarks + "'  + char(10) + char(13) + cast(CNNoteText as varchar(1000)) as nvarchar(max)) where CNClient = " + cc.clisys.ToString() + " and CNNoteIndex = 'Remarks'";
+                    _jurisUtility.ExecuteNonQuery(0, sql);
                 }
             }
         }
@@ -175,50 +376,137 @@ namespace JurisUtilityBase
             OpenFileDialogOpen.CheckPathExists = true;
             OpenFileDialogOpen.Multiselect = false;
 
+            List<CliMat> cliMatList = new List<CliMat>();
+
             if (OpenFileDialogOpen.ShowDialog() == DialogResult.OK)
             {
-                using (TextFieldParser parser = new TextFieldParser(OpenFileDialogOpen.FileName))
-                {
-                    parser.CommentTokens = new string[] { "|" };
-                    parser.SetDelimiters(new string[] { "," });
-                    parser.HasFieldsEnclosedInQuotes = true;
 
-                    // Skip over header line.
-                    parser.ReadLine();
 
-                    while (!parser.EndOfData)
+                    int lineNum = 0;
+                    var fileStream = new FileStream(OpenFileDialogOpen.FileName, FileMode.Open, FileAccess.Read);
+                    using (var streamReader = new StreamReader(fileStream))
                     {
-                        string[] fields = parser.ReadFields();
-                        CliMat cm = new CliMat();
+                        string line;
+                        while ((line = streamReader.ReadLine()) != null)
                         {
-                            Name = fields[0],
-                            FactoryLocation = fields[1],
-                            EstablishedYear = int.Parse(fields[2]),
-                            Profit = double.Parse(fields[3], swedishCulture)
-                        };
+                            lineNum++;
+                            if (lineNum > 1) // ignore header line
+                            {
+                                TextFieldParser parser = new TextFieldParser(new StringReader(line));
+
+                                // You can also read from a file
+                                // TextFieldParser parser = new TextFieldParser("mycsvfile.csv");
+
+                                parser.HasFieldsEnclosedInQuotes = true;
+                                parser.SetDelimiters(",");
+
+                                string[] fields;
+
+                                while (!parser.EndOfData)
+                                {
+                                    fields = parser.ReadFields();
+
+                                        CliMat cm = new CliMat();
+                                        cm.clicode = fields[0];
+                                        cm.matcode = fields[1];
+                                        cm.clisys = getCliSysNbr(cm.clicode);
+                                        cm.matsys = getMatSysNbr(cm.clicode, cm.matcode);
+                                        cm.remarks = fields[2].Replace("%", "").Replace("'", "");
+                                        cm.branch = "";
+                                       cliMatList.Add(cm);                               
+                                }
+
+                                parser.Close();
+                            }
+                        }
                     }
+
+
+
+                //order all items by client and matter code
+                var finalList  = cliMatList.OrderBy(x => x.clicode).ThenBy(y => y.matcode).ToList();
+                cliMatList.Clear();
+                foreach (CliMat cc in finalList)
+                {
+                    bool notUsed = true;
+                    if (cc.clisys !=0 && cc.matsys != 0)
+                        notUsed = processSingleMatter(cc.matsys, cc.remarks);
+                    else
+                    {
+                        ErrorLog er = new ErrorLog();
+                        er.client = cc.clicode;
+                        er.matter = cc.matcode;
+                        er.message = "Cannot close matter because client/matter " + cc.clicode + "/" + cc.matcode + " does not exist. \r\n" + "\r\n";
+                        errorList.Add(er);
+
+                    }
+
                 }
 
             }
+            showFinish();
+            errorList.Clear();
+            clientFilePath = "";
+            matterFilePath = "";
+        }
 
-
-
-
-
-            string sql = "";
-
-            sql = "  insert into trustledger ([TLMatter],[TLBank] ,[TLType] ,[TLDate] ,[TLCheckNbr] ,[TLAmount] ,[TLMemo], tlsysnbr) " +
-        " values(65258, 'T10', 1, convert(DateTime, '02/13/2020', 102), 0, 442.24, 'Added To Ledger By Tool on: ' + convert(varchar, getdate(), 101), (select max(tlsysnbr) + 1 from trustledger)) ";
-            _jurisUtility.ExecuteNonQuery(0, sql);
+        private bool processSingleMatter(int matsys, string comment)
+        {
+            if (checkForBalances(matsys)) // if comment is blank, then its a client closing call, else, matter closing direct call
+            {
+                string sql = "";
+                if (string.IsNullOrEmpty(comment)) // this was a call from Client which means we do not upfdate remarks
+                {
+                    sql = "update matter set MatStatusFlag = 'C', MatLockFlag = 3, MatDateClosed = getdate() where matsysnbr = " + matsys.ToString();
+                    _jurisUtility.ExecuteNonQuery(0, sql);
+                }
+                else // this was a call from the matter which means we do update the remark
+                {
+                    sql = "update matter set MatStatusFlag = 'C', MatLockFlag = 3, MatDateClosed = getdate(), matremarks = left('" + comment + "' + char(10) + char(13) + matremarks, 250) where matsysnbr = " + matsys.ToString();
+                    _jurisUtility.ExecuteNonQuery(0, sql);
+                }
+                return true;
+            }
+            else
+                return false;
 
         }
 
-        private void processSingleMatter(int matsys)
+        private int getMatSysNbr(string clicode, string matcode)
         {
+            int matsys = 0;
             string sql = "";
+            sql ="select matsysnbr from matter " +
+                "inner join client on clisysnbr = matclinbr " +
+                " where dbo.jfn_FormatClientCode(clicode) = '" + clicode + "' and dbo.jfn_FormatMatterCode(MatCode) = " + matcode;
 
-            sql = "  ";
-            _jurisUtility.ExecuteNonQuery(0, sql);
+            DataSet ds = new DataSet();
+            ds = _jurisUtility.RecordsetFromSQL(sql);
+            if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0) // no matsys found
+                return 0;
+            else
+            {
+                matsys = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+                return matsys;
+            }
+        }
+
+        private int getCliSysNbr(string clicode)
+        {
+            int id = 0;
+            string sql = "";
+            sql = "select clisysnbr from client " +
+                " where dbo.jfn_FormatClientCode(clicode) = '" + clicode + "'";
+
+            DataSet ds = new DataSet();
+            ds = _jurisUtility.RecordsetFromSQL(sql);
+            if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0) // no clisys found
+                return 0;
+            else
+            {
+                id = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+                return id;
+            }
 
 
         }
@@ -227,18 +515,18 @@ namespace JurisUtilityBase
         {
             string sql = "";
             sql =
-                "  select dbo.jfn_FormatClientCode(clicode) as clicode, dbo.jfn_FormatMatterCode(MatCode) as matcode, sum(ppd) as ppd, sum(UT) as UT, sum(UE) as UE, sum(AR) as AR, sum(Trust) as Trust " +
+                "  select dbo.jfn_FormatClientCode(clicode) as clicode, dbo.jfn_FormatMatterCode(MatCode) as matcode, cast(sum(ppd) as money) as ppd, cast(sum(UT) as money) as UT, cast(sum(UE) as money) as UE, cast(sum(AR) as money) as AR, cast(sum(Trust) as money) as Trust " +
                 "from( " +
                 "select matsysnbr as matsys, MatPPDBalance as ppd, 0 as UT, 0 as UE, 0 as AR, 0 as Trust " +
-                  "from matter " +
-                  "where MatPPDBalance <> 0 and matsysnbr = " + matsysnbr +
+                  " from matter " +
+                  " where MatPPDBalance <> 0 and matsysnbr = " + matsysnbr +
                   " union all " +
-                  "select utmatter as matsys, 0 as ppd, sum(utamount) as UT, 0 as UE, 0 as AR, 0 as Trust " +
-                  "from unbilledtime where utmatter = " + matsysnbr + 
+                   " select utmatter as matsys, 0 as ppd, sum(utamount) as UT, 0 as UE, 0 as AR, 0 as Trust " +
+                  " from unbilledtime where utmatter = " + matsysnbr + 
                   " group by utmatter " +
-                  "having sum(utamount) <> 0 " +
-                  "union all " +
-                  "select uematter as matsys, 0 as ppd, 0 as UT, sum(ueamount) as UE, 0 as AR, 0 as Trust " +
+                  " having sum(utamount) <> 0 " +
+                  " union all " +
+                  " select uematter as matsys, 0 as ppd, 0 as UT, sum(ueamount) as UE, 0 as AR, 0 as Trust " +
                  " from unbilledexpense where uematter = " + matsysnbr + 
                   "  group by uematter " +
                 " having sum(ueamount) <> 0 " +
@@ -252,9 +540,10 @@ namespace JurisUtilityBase
                  " from trustaccount where tamatter = " + matsysnbr + 
                 "  group by tamatter " +
                 "  having sum(TABalance) <> 0) hhg " +
-                "inner join matter on hhg.matsys = matsysnbr " +
-                "inner join client on clisysnbr = matsysnbr " +
-                "  group by matsys ";
+                " inner join matter on hhg.matsys = matsysnbr " +
+                " inner join client on clisysnbr = matclinbr " +
+                "  group by dbo.jfn_FormatClientCode(clicode), dbo.jfn_FormatMatterCode(MatCode) " +
+                "  having sum(ppd) <> 0 or sum(UT)  <> 0 or sum(UE)  <> 0 or sum(AR)  <> 0 or sum(Trust) <> 0";
 
             DataSet ds = new DataSet();
             ds = _jurisUtility.RecordsetFromSQL(sql);
@@ -265,7 +554,7 @@ namespace JurisUtilityBase
                 ErrorLog er = new ErrorLog();
                 er.client = ds.Tables[0].Rows[0][0].ToString();
                 er.matter = ds.Tables[0].Rows[0][1].ToString();
-                er.message = "Cannot close matter because balance(s) exist: See Below for more detail: \r\n" +
+                er.message = "Cannot close matter " +er.client + "/" + er.matter + " because balance(s) exist. See below for more detail: \r\n" +
                     "Prepaid Balance: " + ds.Tables[0].Rows[0][2].ToString() + "\r\n" +
                     "Unbilled Time Balance: " + ds.Tables[0].Rows[0][3].ToString() + "\r\n" +
                     "Unbilled Expense Balance: " + ds.Tables[0].Rows[0][4].ToString() + "\r\n" +
@@ -438,7 +727,7 @@ namespace JurisUtilityBase
 
         private void buttonMatterExcel_Click(object sender, EventArgs e)
         {
-
+            processMatterExcel();
         }
 
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -447,6 +736,16 @@ namespace JurisUtilityBase
                 activeTab = 0; //client is active tab
             else
                 activeTab = 1; // means matter is active
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonClientExcel_Click(object sender, EventArgs e)
+        {
+            processClientExcel();
         }
     }
 }

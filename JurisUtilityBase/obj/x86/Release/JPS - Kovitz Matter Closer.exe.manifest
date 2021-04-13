@@ -79,18 +79,6 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Costura.dll" size="4096">
-      <assemblyIdentity name="Costura" version="4.1.0.0" publicKeyToken="9919EF960D84173D" language="neutral" processorArchitecture="msil" />
-      <hash>
-        <dsig:Transforms>
-          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-        </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>WVTjMux3Mro0wn4tiNFU0ZGcGwc=</dsig:DigestValue>
-      </hash>
-    </dependentAssembly>
-  </dependency>
-  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Gizmox.Extensions.dll" size="1628160">
       <assemblyIdentity name="Gizmox.Extensions" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
@@ -115,14 +103,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="JPS - Kovitz Matter Closer.exe" size="863232">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="JPS - Kovitz Matter Closer.exe" size="869888">
       <assemblyIdentity name="JPS - Kovitz Matter Closer" version="2.71.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>Tzsk07U8VTQT7XX3NWYnVNOS7Hs=</dsig:DigestValue>
+        <dsig:DigestValue>hv+LoP4FsEbIseMjUIPxf9LmoSo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

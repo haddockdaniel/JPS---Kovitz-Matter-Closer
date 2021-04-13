@@ -7,14 +7,14 @@
     <framework targetVersion="4.0" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="JPS - Kovitz Matter Closer.exe.manifest" size="12106">
+    <dependentAssembly dependencyType="install" codebase="JPS - Kovitz Matter Closer.exe.manifest" size="11459">
       <assemblyIdentity name="JPS - Kovitz Matter Closer.exe" version="3.0.0.8" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>CYHnY1EUPqk2MowRhSN+DWyVSd0=</dsig:DigestValue>
+        <dsig:DigestValue>nK9m7LawF0ei/kD2IdlQEyD1s5s=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
