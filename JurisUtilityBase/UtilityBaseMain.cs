@@ -288,6 +288,8 @@ namespace JurisUtilityBase
                 //order all items by client and matter code
                 var finalList = cliMatList.OrderBy(x => x.clicode).ToList();
                 cliMatList.Clear();
+                int total = finalList.Count;
+                int runningTotal = 0;
                 foreach (CliMat cc in finalList)
                 {
                     if (cc.clisys != 0)
@@ -300,7 +302,8 @@ namespace JurisUtilityBase
                         errorList.Add(er);
 
                     }
-
+                    runningTotal++;
+                    UpdateStatus("Updating....", runningTotal, total);
                 }
 
             }
@@ -426,6 +429,8 @@ namespace JurisUtilityBase
                 //order all items by client and matter code
                 var finalList  = cliMatList.OrderBy(x => x.clicode).ThenBy(y => y.matcode).ToList();
                 cliMatList.Clear();
+                int total = finalList.Count;
+                int runningTotal = 0;
                 foreach (CliMat cc in finalList)
                 {
                     bool notUsed = true;
@@ -442,7 +447,8 @@ namespace JurisUtilityBase
                     }
 
                 }
-
+                runningTotal++;
+                UpdateStatus("Updating....", runningTotal, total);
             }
             showFinish();
             errorList.Clear();
