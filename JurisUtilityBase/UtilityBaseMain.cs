@@ -114,7 +114,7 @@ namespace JurisUtilityBase
                             CliMat cm = new CliMat();
                             cm.clicode = textBoxClientText.Text;
                             cm.name = textBoxCliName.Text.Replace("%", "").Replace("'", "");
-                            cm.remarks = richTextBoxCliRemarks.Text.Replace("%", "").Replace("'", "");
+                        cm.remarks = richTextBoxCliRemarks.Text.Replace("%", "").Replace("'", "").Replace("\"", "");
                             cm.branch = textBoxCliBranch.Text.Replace("%", "").Replace("'", "");
 
                             processSingleClient(cm);
@@ -275,16 +275,26 @@ namespace JurisUtilityBase
                                 cm.clicode = fields[0];
                                 cm.name = fields[1].Replace("%", "").Replace("'", "");
                                 cm.clisys = getCliSysNbr(cm.clicode);
-                                cm.remarks = fields[3].Replace("%", "").Replace("'", "");
+                                //cm.remarks = fields[3].Replace("%", "").Replace("'", "").Replace('\u00A0', ' ');
+
+                                string cleaned = "";
+                                string pattern = @"[^\u0000-\u007F]+";
+                                string replacement = " ";
+
+                                Regex rgx = new Regex(pattern);
+                                cleaned = rgx.Replace(fields[3].Replace("%", "").Replace("'", ""), replacement);
+
+                                cm.remarks = cleaned;
+
                                 cm.branch = fields[2].Replace("%", "").Replace("'", "");
                                 cliMatList.Add(cm);
                             }
-
+                            
                             parser.Close();
                         }
                     }
                 }
-
+                //change tab defaults
                 //order all items by client and matter code
                 var finalList = cliMatList.OrderBy(x => x.clicode).ToList();
                 cliMatList.Clear();
@@ -305,12 +315,12 @@ namespace JurisUtilityBase
                     runningTotal++;
                     UpdateStatus("Updating....", runningTotal, total);
                 }
-
+                showFinish();
+                errorList.Clear();
+                clientFilePath = "";
+                matterFilePath = "";
             }
-            showFinish();
-            errorList.Clear();
-            clientFilePath = "";
-            matterFilePath = "";
+
         }
 
         private void processSingleClient(CliMat cc)
@@ -363,7 +373,7 @@ namespace JurisUtilityBase
                 }
                 else // if it does exist, put the new text at the top
                 {
-                    sql = "update ClientNote set CNNoteText = cast('" + cc.remarks + "'  + char(10) + char(13) + cast(CNNoteText as varchar(1000)) as nvarchar(max)) where CNClient = " + cc.clisys.ToString() + " and CNNoteIndex = 'Remarks'";
+                    sql = "update ClientNote set CNNoteText = cast('" + cc.remarks + "'  + char(13) + char(10) + char(13) + char(10) + cast(CNNoteText as varchar(1000)) as nvarchar(max)) where CNClient = " + cc.clisys.ToString() + " and CNNoteIndex = 'Remarks'";
                     _jurisUtility.ExecuteNonQuery(0, sql);
                 }
             }
@@ -449,11 +459,12 @@ namespace JurisUtilityBase
                 }
                 runningTotal++;
                 UpdateStatus("Updating....", runningTotal, total);
+                showFinish();
+                errorList.Clear();
+                clientFilePath = "";
+                matterFilePath = "";
             }
-            showFinish();
-            errorList.Clear();
-            clientFilePath = "";
-            matterFilePath = "";
+
         }
 
         private bool processSingleMatter(int matsys, string comment)
@@ -468,7 +479,7 @@ namespace JurisUtilityBase
                 }
                 else // this was a call from the matter which means we do update the remark
                 {
-                    sql = "update matter set MatStatusFlag = 'C', MatLockFlag = 3, MatDateClosed = getdate(), matremarks = left('" + comment + "' + char(10) + char(13) + matremarks, 250) where matsysnbr = " + matsys.ToString();
+                    sql = "update matter set MatStatusFlag = 'C', MatLockFlag = 3, MatDateClosed = getdate(), matremarks = left('" + comment + "' + char(13) + char(10) + char(13) + char(10) + matremarks, 250) where matsysnbr = " + matsys.ToString();
                     _jurisUtility.ExecuteNonQuery(0, sql);
                 }
                 return true;

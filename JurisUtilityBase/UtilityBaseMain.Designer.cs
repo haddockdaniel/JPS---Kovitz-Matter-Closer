@@ -44,11 +44,19 @@
             this.button1 = new System.Windows.Forms.Button();
             this.TabControl1 = new System.Windows.Forms.TabControl();
             this.ClientTab = new System.Windows.Forms.TabPage();
+            this.richTextBoxCliRemarks = new System.Windows.Forms.RichTextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.textBoxCliName = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBoxCliBranch = new System.Windows.Forms.TextBox();
             this.buttonClientExcel = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxClientText = new System.Windows.Forms.TextBox();
             this.MatterTab = new System.Windows.Forms.TabPage();
+            this.richTextBoxRemarksMatter = new System.Windows.Forms.RichTextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxClientMatter = new System.Windows.Forms.TextBox();
             this.buttonMatterExcel = new System.Windows.Forms.Button();
@@ -56,14 +64,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxMatterText = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.label6 = new System.Windows.Forms.Label();
-            this.textBoxCliBranch = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.textBoxCliName = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.richTextBoxCliRemarks = new System.Windows.Forms.RichTextBox();
-            this.richTextBoxRemarksMatter = new System.Windows.Forms.RichTextBox();
-            this.label9 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.JurisLogoImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LexisNexisLogoPictureBox)).BeginInit();
             this.statusStrip.SuspendLayout();
@@ -227,6 +227,62 @@
             this.ClientTab.Text = "Client";
             this.ClientTab.UseVisualStyleBackColor = true;
             // 
+            // richTextBoxCliRemarks
+            // 
+            this.richTextBoxCliRemarks.Location = new System.Drawing.Point(241, 84);
+            this.richTextBoxCliRemarks.Name = "richTextBoxCliRemarks";
+            this.richTextBoxCliRemarks.Size = new System.Drawing.Size(194, 46);
+            this.richTextBoxCliRemarks.TabIndex = 3;
+            this.richTextBoxCliRemarks.Text = "";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label8.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.label8.Location = new System.Drawing.Point(240, 65);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(70, 16);
+            this.label8.TabIndex = 25;
+            this.label8.Text = "Remarks";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label7.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.label7.Location = new System.Drawing.Point(11, 65);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(83, 16);
+            this.label7.TabIndex = 23;
+            this.label7.Text = "New Name";
+            this.label7.Click += new System.EventHandler(this.label7_Click);
+            // 
+            // textBoxCliName
+            // 
+            this.textBoxCliName.Location = new System.Drawing.Point(12, 87);
+            this.textBoxCliName.Name = "textBoxCliName";
+            this.textBoxCliName.Size = new System.Drawing.Size(194, 20);
+            this.textBoxCliName.TabIndex = 2;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label6.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.label6.Location = new System.Drawing.Point(240, 9);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(90, 16);
+            this.label6.TabIndex = 21;
+            this.label6.Text = "New Branch";
+            // 
+            // textBoxCliBranch
+            // 
+            this.textBoxCliBranch.Location = new System.Drawing.Point(241, 31);
+            this.textBoxCliBranch.Name = "textBoxCliBranch";
+            this.textBoxCliBranch.Size = new System.Drawing.Size(194, 20);
+            this.textBoxCliBranch.TabIndex = 1;
+            // 
             // buttonClientExcel
             // 
             this.buttonClientExcel.BackColor = System.Drawing.Color.LightGray;
@@ -287,6 +343,25 @@
             this.MatterTab.Text = "Matter";
             this.MatterTab.UseVisualStyleBackColor = true;
             // 
+            // richTextBoxRemarksMatter
+            // 
+            this.richTextBoxRemarksMatter.Location = new System.Drawing.Point(131, 86);
+            this.richTextBoxRemarksMatter.Name = "richTextBoxRemarksMatter";
+            this.richTextBoxRemarksMatter.Size = new System.Drawing.Size(194, 46);
+            this.richTextBoxRemarksMatter.TabIndex = 6;
+            this.richTextBoxRemarksMatter.Text = "";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label9.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.label9.Location = new System.Drawing.Point(130, 67);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(70, 16);
+            this.label9.TabIndex = 27;
+            this.label9.Text = "Remarks";
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -303,7 +378,7 @@
             this.textBoxClientMatter.Location = new System.Drawing.Point(7, 34);
             this.textBoxClientMatter.Name = "textBoxClientMatter";
             this.textBoxClientMatter.Size = new System.Drawing.Size(194, 20);
-            this.textBoxClientMatter.TabIndex = 24;
+            this.textBoxClientMatter.TabIndex = 4;
             // 
             // buttonMatterExcel
             // 
@@ -345,86 +420,11 @@
             this.textBoxMatterText.Location = new System.Drawing.Point(253, 34);
             this.textBoxMatterText.Name = "textBoxMatterText";
             this.textBoxMatterText.Size = new System.Drawing.Size(194, 20);
-            this.textBoxMatterText.TabIndex = 20;
+            this.textBoxMatterText.TabIndex = 5;
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label6.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label6.Location = new System.Drawing.Point(240, 9);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(90, 16);
-            this.label6.TabIndex = 21;
-            this.label6.Text = "New Branch";
-            // 
-            // textBoxCliBranch
-            // 
-            this.textBoxCliBranch.Location = new System.Drawing.Point(241, 31);
-            this.textBoxCliBranch.Name = "textBoxCliBranch";
-            this.textBoxCliBranch.Size = new System.Drawing.Size(194, 20);
-            this.textBoxCliBranch.TabIndex = 20;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label7.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label7.Location = new System.Drawing.Point(11, 65);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(83, 16);
-            this.label7.TabIndex = 23;
-            this.label7.Text = "New Name";
-            this.label7.Click += new System.EventHandler(this.label7_Click);
-            // 
-            // textBoxCliName
-            // 
-            this.textBoxCliName.Location = new System.Drawing.Point(12, 87);
-            this.textBoxCliName.Name = "textBoxCliName";
-            this.textBoxCliName.Size = new System.Drawing.Size(194, 20);
-            this.textBoxCliName.TabIndex = 22;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label8.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label8.Location = new System.Drawing.Point(240, 65);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(70, 16);
-            this.label8.TabIndex = 25;
-            this.label8.Text = "Remarks";
-            // 
-            // richTextBoxCliRemarks
-            // 
-            this.richTextBoxCliRemarks.Location = new System.Drawing.Point(241, 84);
-            this.richTextBoxCliRemarks.Name = "richTextBoxCliRemarks";
-            this.richTextBoxCliRemarks.Size = new System.Drawing.Size(194, 46);
-            this.richTextBoxCliRemarks.TabIndex = 26;
-            this.richTextBoxCliRemarks.Text = "";
-            // 
-            // richTextBoxRemarksMatter
-            // 
-            this.richTextBoxRemarksMatter.Location = new System.Drawing.Point(131, 86);
-            this.richTextBoxRemarksMatter.Name = "richTextBoxRemarksMatter";
-            this.richTextBoxRemarksMatter.Size = new System.Drawing.Size(194, 46);
-            this.richTextBoxRemarksMatter.TabIndex = 28;
-            this.richTextBoxRemarksMatter.Text = "";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label9.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label9.Location = new System.Drawing.Point(130, 67);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(70, 16);
-            this.label9.TabIndex = 27;
-            this.label9.Text = "Remarks";
             // 
             // UtilityBaseMain
             // 
