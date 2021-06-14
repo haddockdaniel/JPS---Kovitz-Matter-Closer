@@ -444,8 +444,13 @@ namespace JurisUtilityBase
                 foreach (CliMat cc in finalList)
                 {
                     bool notUsed = true;
-                    if (cc.clisys !=0 && cc.matsys != 0)
+                    if (cc.clisys != 0 && cc.matsys != 0)
+                    {
+                        string sql = "update matter set MatLockFlag = 3 where matsysnbr = " + cc.matsys.ToString();
+                        _jurisUtility.ExecuteNonQuery(0, sql);
                         notUsed = processSingleMatter(cc.matsys, cc.remarks);
+
+                    }
                     else
                     {
                         ErrorLog er = new ErrorLog();
@@ -485,7 +490,9 @@ namespace JurisUtilityBase
                 return true;
             }
             else
+            {
                 return false;
+            }
 
         }
 
