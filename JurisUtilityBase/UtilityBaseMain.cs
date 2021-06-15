@@ -296,8 +296,7 @@ namespace JurisUtilityBase
                 }
                 //change tab defaults
                 //order all items by client and matter code
-                var finalList = cliMatList.OrderBy(x => x.clicode).ToList();
-                cliMatList.Clear();
+                var finalList = cliMatList.OrderBy(x => x.clicode).ToList(); 
                 int total = finalList.Count;
                 int runningTotal = 0;
                 foreach (CliMat cc in finalList)
@@ -446,10 +445,7 @@ namespace JurisUtilityBase
                     bool notUsed = true;
                     if (cc.clisys != 0 && cc.matsys != 0)
                     {
-                        string sql = "update matter set MatLockFlag = 3 where matsysnbr = " + cc.matsys.ToString();
-                        _jurisUtility.ExecuteNonQuery(0, sql);
                         notUsed = processSingleMatter(cc.matsys, cc.remarks);
-
                     }
                     else
                     {
@@ -474,9 +470,11 @@ namespace JurisUtilityBase
 
         private bool processSingleMatter(int matsys, string comment)
         {
+            string sql = "";
+
             if (checkForBalances(matsys)) // if comment is blank, then its a client closing call, else, matter closing direct call
             {
-                string sql = "";
+                sql = "";
                 if (string.IsNullOrEmpty(comment)) // this was a call from Client which means we do not upfdate remarks
                 {
                     sql = "update matter set MatStatusFlag = 'C', MatLockFlag = 3, MatDateClosed = getdate() where matsysnbr = " + matsys.ToString();
@@ -491,6 +489,12 @@ namespace JurisUtilityBase
             }
             else
             {
+                if (!string.IsNullOrEmpty(comment))
+                    sql = "update matter set MatLockFlag = 3, matremarks = left('" + comment + "' + char(13) + char(10) + char(13) + char(10) + matremarks, 250) where matsysnbr = " + matsys.ToString();
+                else
+                    sql = "update matter set MatLockFlag = 3 where matsysnbr = " + matsys.ToString();
+                _jurisUtility.ExecuteNonQuery(0, sql);
+
                 return false;
             }
 
